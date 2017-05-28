@@ -1,0 +1,24 @@
+	<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="lib/node_modules/angular/angular.js"></script>
+<script src="lib/node_modules/angular-resource/angular-resource.js"></script>
+<script src="//unpkg.com/angular-ui-router@0.3.1/release/angular-ui-router.js"></script>
+<script src="lib/node_modules/jquery/dist/jquery.js"></script>
+<script src="lib/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script src="lib/node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
+<script src="lib/node_modules/ng-infinite-scroll/build/ng-infinite-scroll.js" ></script>
+<link href="lib/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet"/>
+
+<script src="app.js"></script>
+
+<script src="pages/home/homeController.js"></script>
+<script src="service/messagesService.js"></script>
+</head>
+<body ng-app="myApp" >
+<div style="width: 85%; margin: auto;" >
+	<ui-view></ui-view>
+</div>
+</body>
+</html>
