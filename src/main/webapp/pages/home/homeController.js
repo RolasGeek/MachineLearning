@@ -16,6 +16,12 @@ app.controller('homeController', ['$scope','$state' ,'$rootScope', '$location','
 			console.log(respond);
 		})
 	}
+	$scope.calculate2 = function(text) {
+		MessageService.calculate2(text).success(function(respond){
+			$scope.owner = respond;
+			console.log(respond);
+		})
+	}
 	$scope.getMessages = function()  {
 		$scope.loaded += 6;
 		MessageService.getAll($scope.loaded).success(function(respond){

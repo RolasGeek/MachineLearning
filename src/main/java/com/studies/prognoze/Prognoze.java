@@ -1,5 +1,6 @@
 package com.studies.prognoze;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,14 +8,20 @@ import java.util.List;
 
 import javax.xml.crypto.Data;
 
+import org.languagetool.JLanguageTool;
+import org.languagetool.language.AmericanEnglish;
+import org.languagetool.rules.RuleMatch;
+
 import com.studies.classifiers.Classifier;
 import com.studies.classifiers.DataClass;
 import com.studies.classifiers.User;
 import com.studies.classifiers.prepareClassifiers;
+import com.studies.SpellCheck.Test;
 
 public class Prognoze {
 	private static Prognoze instance;
 	private Classifier classifier1 = null; // Zodziu pasikartojimo
+	private Classifier classifier2 = null; // Spell checkinimo
 	
 	public static Prognoze getInstance() {
 		if(instance == null) {
@@ -54,6 +61,34 @@ public class Prognoze {
 		for (String key : result.keySet()) {
 			if(result.get(key) > biggest) {
 				biggest = result.get(key);
+				owner = key;
+			}
+		}
+		return owner;
+	}
+	
+	public String Calculate2(String text) {
+		classifier2 = prepareClassifiers.prepareSpellingCheck();
+		HashMap<String, Object> result = classifier1.getValues();
+		
+		JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());
+		List<RuleMatch> matches;
+		try {
+			matches = langTool.check(text);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
+		String words[] = text.split("[^a-zA-Z0-9\'“”’\"$]");
+		double koef = matches.size()/(double)words.length;
+		
+		Double smallest = Double.MAX_VALUE, temp=0.0;
+		String owner = "";
+		for (String key : result.keySet()) {
+			temp = Math.abs((double)result.get(key)-koef);
+			if(temp < smallest) {
+				smallest = temp;
 				owner = key;
 			}
 		}

@@ -46,6 +46,11 @@
         <version>3.2</version>
         <scope>provided</scope>
       </dependency>
+      <dependency>
+  		<groupId>org.languagetool</groupId>
+	  <artifactId>language-en</artifactId>
+	  <version>3.7</version>
+	</dependency>
 
 		</dependencies>
 	</dependencyManagement>
@@ -99,6 +104,11 @@
       <artifactId>javax.ejb-api</artifactId>
       <scope>provided</scope>
     </dependency>
+		<dependency>
+			<groupId>org.languagetool</groupId>
+			<artifactId>language-en</artifactId>
+			<version>3.7</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
