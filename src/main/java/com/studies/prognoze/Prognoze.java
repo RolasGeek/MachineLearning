@@ -27,12 +27,20 @@ public class Prognoze {
 	public static Prognoze getInstance() {
 		if(instance == null) {
 			instance = new Prognoze();
+			instance.executeClassifiers();
 		}
 		return instance;
 	}
+	public void executeClassifiers() {
+		System.out.println("SKaiciuojamos tikimybes");
+		classifier1 = prepareClassifiers.prepareWordCount();
+		classifier2 = prepareClassifiers.prepareSpellingCheck();
+		classifier3 = prepareClassifiers.prepareMessageLenght();
+		System.out.println("Baigta");
+	}
 	
 	public String Calculate(String text) {
-		classifier1 = prepareClassifiers.prepareWordCount();
+		
 		HashMap<String, Object> data = classifier1.getValues();
 		String words[] = text.split("[^a-zA-Z0-9\'“”’\"$]");
 		HashMap<String, Double> result = new HashMap<>();
@@ -69,7 +77,7 @@ public class Prognoze {
 	}
 	
 	public String Calculate2(String text) {
-		classifier2 = prepareClassifiers.prepareSpellingCheck();
+		
 		HashMap<String, Object> result = classifier2.getValues();
 		
 		//JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());
@@ -99,7 +107,7 @@ public class Prognoze {
 	}
 	
 	public String Calculate3(String text) {
-		classifier3 = prepareClassifiers.prepareMessageLenght();
+		
 		Integer lenght = text.length() / 10;
 		DataClass result = classifier3.getByKey(Integer.toString(lenght));
 		if(result != null) {

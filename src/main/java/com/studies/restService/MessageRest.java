@@ -31,6 +31,7 @@ public class MessageRest {
 		message.setDate(date);
 		try {
 		MessageService.getInstance().create(message);
+		Prognoze.getInstance().executeClassifiers();
 		return "Message has been successfully posted";
 		} catch (Exception e) {
 			return "failed";
@@ -74,6 +75,7 @@ public class MessageRest {
 	public String remove(@PathParam("id") Integer id) {
 		try {
 		MessageService.getInstance().deleteById(id);
+		Prognoze.getInstance().executeClassifiers();
 		return "Success";
 		} catch (Exception e) {
 			
