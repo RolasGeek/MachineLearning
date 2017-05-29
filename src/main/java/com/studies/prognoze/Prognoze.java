@@ -1,6 +1,7 @@
 package com.studies.prognoze;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,14 +33,14 @@ public class Prognoze {
 		return instance;
 	}
 	public void executeClassifiers() {
-		System.out.println("SKaiciuojamos tikimybes");
+		System.out.println("Skaiciuojamos tikimybes");
 		classifier1 = prepareClassifiers.prepareWordCount();
 		classifier2 = prepareClassifiers.prepareSpellingCheck();
 		classifier3 = prepareClassifiers.prepareMessageLenght();
 		System.out.println("Baigta");
 	}
 	
-	public String Calculate(String text) {
+	public List<User> Calculate(String text) {
 		
 		HashMap<String, Object> data = classifier1.getValues();
 		String words[] = text.split("[^a-zA-Z0-9\'“”’\"$]");
@@ -73,10 +74,18 @@ public class Prognoze {
 				owner = key;
 			}
 		}
-		return owner;
+		//Sudedami koef balsavimui
+		List<User> resultdata = new ArrayList<>();
+		for (String key : result.keySet()) {
+			Double value = (Double) result.get(key);
+			Double db = Math.abs(value/biggest);
+			resultdata.add(new User(key, db , 0));
+		}
+		Collections.sort(resultdata, (o1,o2)-> Double.compare(o2.getKoef(), o1.getKoef()));
+		return resultdata;
 	}
 	
-	public String Calculate2(String text) {
+	public List<User> Calculate2(String text) {
 		
 		HashMap<String, Object> result = classifier2.getValues();
 		
@@ -87,7 +96,7 @@ public class Prognoze {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "";
+			return null;
 		}
 		String words[] = text.split("[^a-zA-Z0-9\'“”’\"$]");
 		double koef = matches.size()/(double)words.length;
@@ -102,24 +111,57 @@ public class Prognoze {
 				owner = key;
 			}
 		}
+		//Sudedami koef balsavimui
+		List<User> resultdata = new ArrayList<>();
+		for (String key : result.keySet()) {
+			Double value = (Double) result.get(key);
+			Double db = Math.abs(value-(double)result.get(owner));
+			resultdata.add(new User(key, 1 - db , 0));
+		}
+		Collections.sort(resultdata, (o1,o2)-> Double.compare(o2.getKoef(), o1.getKoef()));
 		System.out.println("message koef: "+koef+". arciausias koef: "+result.get(owner));
-		return owner;
+		return resultdata;
 	}
 	
-	public String Calculate3(String text) {
-		
+	public List<User> Calculate3(String text) {
 		Integer lenght = text.length() / 10;
 		DataClass result = classifier3.getByKey(Integer.toString(lenght));
 		if(result != null) {
 			List<User> types = result.getTypes();
 			for (User u : types) {
+				Integer index = types.indexOf(u);
+				Double koef = types.get(0).getAmount() != 0.0 ? u.getAmount()/types.get(0).getAmount() : 0.0;
+				u.setKoef(koef); //Balsaviko koef
+				types.set(index, u);
 				System.out.println("Name: " + u.getName() + " Amount: " + u.getAmount());
 			}
-		return result.getTypes().get(0).getName();
+		return types;
 		} else {
-			return "Not enought data";
+			return null;
 		}
 		
+	}
+	public String executeAll(String text) {
+		List<User> list1 = Calculate(text);
+		sortByName(list1);
+		List<User> list2 = Calculate2(text);
+		sortByName(list2);
+		List<User> list3 = Calculate3(text);
+		sortByName(list3);
+		List<User> result = new DataClass().getTypes();
+		int i = 0;
+		for (User user : result) {
+			user.setKoef(list1.get(i).getKoef()+list2.get(i).getKoef()+list3.get(i).getKoef());
+			result.set(i,user);
+			i++;
+		}
+		Collections.sort(result,(o1, o2)->Double.compare(o2.getKoef(), o1.getKoef()));
+		return result.get(0).getName();
+	}
+	
+	public List<User> sortByName(List<User> list) {
+		Collections.sort(list, (o1,o2)->o1.getName().compareTo(o2.getName()));
+		return list;
 	}
  
 }

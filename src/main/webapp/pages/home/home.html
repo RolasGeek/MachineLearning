@@ -7,9 +7,10 @@
 <div class="form-group">
 <textarea name="Message" ng-model="calculateText" class="form-control" required placeholder="Message" style="height: 200px;" ></textarea>
 This message belongs to: {{owner}}
-<input type="submit" name="subbmit" value="Submit (Word count)" ng-click="calculateForm.$valid && calculate(calculateText,0)" class="btn">
+<input type="submit" name="subbmit" value="Submit (Words used)" ng-click="calculateForm.$valid && calculate(calculateText,0)" class="btn">
 <input type="submit" name="subbmit2" value="Submit (Spell check)" ng-click="calculateForm.$valid && calculate(calculateText,1)" class="btn">
 <input type="submit" name="subbmit3" value="Submit (Message Lenght)" ng-click="calculateForm.$valid && calculate(calculateText,2)" class="btn">
+<input type="submit" name="subbmit4" value="Submit (Combined)" ng-click="calculateForm.$valid && calculate(calculateText,10)" class="btn">
 </div>
 </form>
 </div>

@@ -53,16 +53,17 @@ public class MessageRest {
 		String guess = "";
 		switch (method) {
 		case 0:
-			guess = Prognoze.getInstance().Calculate(text);
+			guess = Prognoze.getInstance().Calculate(text).get(0).getName();
 			break;
 		case 1:
-			guess = Prognoze.getInstance().Calculate2(text);
+			guess = Prognoze.getInstance().Calculate2(text).get(0).getName();
 			break;
 		case 2:
-			guess = Prognoze.getInstance().Calculate3(text);
+			guess = Prognoze.getInstance().Calculate3(text).get(0).getName();
 			break;
 		default:
 			//Balsavimo metodas
+			guess = Prognoze.getInstance().executeAll(text);
 			break;
 		}
 		System.out.println(guess);
