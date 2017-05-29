@@ -16,7 +16,6 @@ import com.studies.classifiers.Classifier;
 import com.studies.classifiers.DataClass;
 import com.studies.classifiers.User;
 import com.studies.classifiers.prepareClassifiers;
-import com.studies.SpellCheck.Test;
 
 public class Prognoze {
 	private static Prognoze instance;
@@ -69,7 +68,7 @@ public class Prognoze {
 	
 	public String Calculate2(String text) {
 		classifier2 = prepareClassifiers.prepareSpellingCheck();
-		HashMap<String, Object> result = classifier1.getValues();
+		HashMap<String, Object> result = classifier2.getValues();
 		
 		JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());
 		List<RuleMatch> matches;
@@ -87,11 +86,13 @@ public class Prognoze {
 		String owner = "";
 		for (String key : result.keySet()) {
 			temp = Math.abs((double)result.get(key)-koef);
+			System.out.println(key+" - "+result.get(key));
 			if(temp < smallest) {
 				smallest = temp;
 				owner = key;
 			}
 		}
+		System.out.println("message koef: "+koef+". arciausias koef: "+result.get(owner));
 		return owner;
 	}
  

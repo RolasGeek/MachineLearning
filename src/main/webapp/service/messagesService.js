@@ -17,7 +17,9 @@ app.factory('MessageService',['$http', function ($http) {
 	messageService.calculate = function(text) {
 		return $http.get(urlBase+ "calculate/"+text);
 	}
-	
+	messageService.calculate2 = function(text) {
+		return $http.get(urlBase+ "calculate2/"+text);
+	}
 	
 	return messageService;
 }]);

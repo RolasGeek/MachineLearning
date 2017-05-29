@@ -55,4 +55,13 @@ public class MessageRest {
 		System.out.println(guess);
 		return guess;
 	}
+	
+	@GET
+	@Path("calculate2/{text}")
+	@Produces(MediaType.APPLICATION_XML)
+	public String calculate2(@PathParam("text") String text) {
+		String guess = Prognoze.getInstance().Calculate2(text);
+		System.out.println(guess);
+		return guess;
+	}
 }
