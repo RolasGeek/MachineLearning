@@ -5,8 +5,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.studies.SpellingChecker.SpellCheckResponse;
-import com.studies.SpellingChecker.SpellingCheckClass;
 import com.studies.classifiers.prepareClassifiers;
 import com.studies.model.Messages;
 import com.studies.prognoze.Prognoze;
@@ -48,20 +46,41 @@ public class MessageRest {
 	}
 	
 	@GET
-	@Path("calculate/{text}")
+	@Path("calculate/{text}/{method}")
 	@Produces(MediaType.APPLICATION_XML)
-	public String calculate(@PathParam("text") String text) {
-		String guess = Prognoze.getInstance().Calculate(text);
+	public String calculate(@PathParam("text") String text, @PathParam("method") Integer method) {
+		String guess = "";
+		switch (method) {
+		case 0:
+			guess = Prognoze.getInstance().Calculate(text);
+			break;
+		case 1:
+			guess = Prognoze.getInstance().Calculate2(text);
+			break;
+		case 2:
+			guess = Prognoze.getInstance().Calculate3(text);
+			break;
+		default:
+			//Balsavimo metodas
+			break;
+		}
 		System.out.println(guess);
 		return guess;
 	}
 	
 	@GET
-	@Path("calculate2/{text}")
+	@Path("remove/{id}")
 	@Produces(MediaType.APPLICATION_XML)
-	public String calculate2(@PathParam("text") String text) {
-		String guess = Prognoze.getInstance().Calculate2(text);
-		System.out.println(guess);
-		return guess;
+	public String remove(@PathParam("id") Integer id) {
+		try {
+		MessageService.getInstance().deleteById(id);
+		return "Success";
+		} catch (Exception e) {
+			
+			return "";
+			// TODO: handle exception
+		}
+
 	}
+	
 }

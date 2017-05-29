@@ -13,4 +13,8 @@ public class Classifier {
 	public void setValues(HashMap<String, Object> values) {
 		this.values = values;
 	}
+	
+	public DataClass getByKey(String key) {
+		return (DataClass) values.get(key);
+	}
 }

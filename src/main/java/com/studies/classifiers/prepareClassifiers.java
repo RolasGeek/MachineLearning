@@ -2,6 +2,7 @@ package com.studies.classifiers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,8 +11,7 @@ import org.languagetool.language.AmericanEnglish;
 import org.languagetool.rules.RuleMatch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.studies.SpellingChecker.SpellCheckResponse;
-import com.studies.SpellingChecker.SpellingCheckClass;
+import com.studies.SpellingChecker.LanguageToolInstance;
 import com.studies.model.Messages;
 import com.studies.service.MessageService;
 
@@ -29,7 +29,7 @@ public class prepareClassifiers {
 	private static HashMap<String, Object> countSpellingMistakes() {
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		List<Messages> all = MessageService.getInstance().listAll(0, 10000);
-		JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());
+		//JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());
 		DataClass users = new DataClass();
 		List<RuleMatch> matches;
 		String words[], text = "", name = "";
@@ -39,7 +39,7 @@ public class prepareClassifiers {
 			text = message.getMessage();
 			name = message.getName();
 			try {
-				matches = langTool.check(text);
+				matches = LanguageToolInstance.getInstance().getLangTool().check(text);
 				words = text.split("[^a-zA-Z0-9\'“”’\"$]");
 				koef = (matches.size()/(double)words.length);
 				//System.out.println("matches: " + matches.size());
@@ -105,12 +105,12 @@ public class prepareClassifiers {
 				list.set(index, user);
 				}
 			}
-			System.out.println("done");
 			
 		}
 		classifier.setValues(data);
 		return classifier;
 	}
+	
 	
 	private static Integer differetWords(String name, HashMap<String, Object> data) {
 		Integer count = 0;
@@ -122,6 +122,44 @@ public class prepareClassifiers {
 			}
 		}
 		return count;
+	}
+	
+	
+	public static Classifier prepareMessageLenght() {
+		Classifier classifier = new Classifier();
+		HashMap<String, Object> data = countLenghts();
+		for (String key : data.keySet()) {
+			DataClass obj = (DataClass) data.get(key);
+			Collections.sort(obj.getTypes(), (o1, o2) -> Double.compare(o2.getAmount(), o1.getAmount()));
+		}
+		classifier.setValues(data);
+		return classifier;
+	}
+	
+	public static HashMap<String, Object> countLenghts() {
+		HashMap<String, Object> data = new HashMap<>();
+		List<Messages> all = MessageService.getInstance().listAll(0, 10000);
+		for (Messages messages : all) {
+			int l = messages.getMessage().length() / 10;
+			String key  = Integer.toString(l);
+			DataClass obj = (DataClass) data.get(key);
+			if(obj != null) {
+				Integer index = obj.getByName(messages.getName());
+				User u = obj.getTypes().get(index);
+				u.setAmount(u.getAmount()+1);
+				obj.getTypes().set(index, u);
+			} else {
+				DataClass temp = new DataClass();
+				Integer index = temp.getByName(messages.getName());
+				temp.getTypes().set(index, new User(messages.getName(), 0.0, 1));
+				data.put(key, temp);
+			}
+		}
+		
+		for (Messages messages : all) {
+			
+		}
+		return data;
 	}
 	
 	

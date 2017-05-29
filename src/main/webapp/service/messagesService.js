@@ -14,11 +14,11 @@ app.factory('MessageService',['$http', function ($http) {
 	messageService.getAll = function(amount) {
 		return $http.get(urlBase+ "all/"+amount);
 	}
-	messageService.calculate = function(text) {
-		return $http.get(urlBase+ "calculate/"+text);
+	messageService.calculate = function(text, method) {
+		return $http.get(urlBase+ "calculate/"+text + "/" + method);
 	}
-	messageService.calculate2 = function(text) {
-		return $http.get(urlBase+ "calculate2/"+text);
+	messageService.remove = function(id) {
+		return $http.get(urlBase+ "remove/"+id);
 	}
 	
 	return messageService;

@@ -28,7 +28,10 @@ public class MessageService {
 	public void deleteById(Integer id) {
 		Messages entity = em.find(Messages.class, id);
 		if (entity != null) {
+			em.getTransaction().begin();
 			em.remove(entity);
+			em.getTransaction().commit();
+			em.close();
 		}
 	}
 

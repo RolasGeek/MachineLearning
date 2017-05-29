@@ -1,7 +1,19 @@
 <div style="height:200px; margin:auto; background-color: gray;"> 
-<p>Put soemthing here</p>
+<p>Put something here</p>
 </div>
 <br></br>
+<div class="container">
+<form name="calculateForm">
+<div class="form-group">
+<textarea name="Message" ng-model="calculateText" class="form-control" required placeholder="Message" style="height: 200px;" ></textarea>
+This message belongs to: {{owner}}
+<input type="submit" name="subbmit" value="Submit (Word count)" ng-click="calculateForm.$valid && calculate(calculateText,0)" class="btn">
+<input type="submit" name="subbmit2" value="Submit (Spell check)" ng-click="calculateForm.$valid && calculate(calculateText,1)" class="btn">
+<input type="submit" name="subbmit3" value="Submit (Message Lenght)" ng-click="calculateForm.$valid && calculate(calculateText,2)" class="btn">
+</div>
+</form>
+</div>
+<br>
 <div class="container">
 <form name="messageForm">
 <div class="form-group">
@@ -13,7 +25,7 @@
 <option value="StOrAs" >StOrAs</option>
 <option value="Jonas" >Jonas</option>
 </select>
-<input type="submit" name="subbmit" ng-click="messageForm.$valid && insert(message)" class="btn">
+<input type="submit" name="subbmit" value="Post" ng-click="messageForm.$valid && insert(message)" class="btn">
 </div>
 </form>
 </div>
@@ -33,6 +45,7 @@
                 <h4>Date: {{message.date | date:'yyyy-MM-dd hh:mm:ss'}}</h4>
                 <p>Message: {{message.message}}</p>
             </div>
+            <input type="button" name="button" value="Remove" class="btn" ng-click="remove(message.id)" >
             </div>
             <br>
         </div> 

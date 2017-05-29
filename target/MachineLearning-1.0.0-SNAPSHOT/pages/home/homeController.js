@@ -10,6 +10,18 @@ app.controller('homeController', ['$scope','$state' ,'$rootScope', '$location','
 			$state.reload();
 		})
 	}
+	$scope.calculate = function(text, method) {
+		MessageService.calculate(text,method).success(function(respond){
+			$scope.owner = respond;
+			console.log(respond);
+		})
+	}
+	$scope.remove = function(id) {
+		MessageService.remove(id).success(function(respond){
+			console.log("deleted");
+			$state.reload();
+		})
+	}
 	$scope.getMessages = function()  {
 		$scope.loaded += 6;
 		MessageService.getAll($scope.loaded).success(function(respond){

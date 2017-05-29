@@ -14,7 +14,12 @@ app.factory('MessageService',['$http', function ($http) {
 	messageService.getAll = function(amount) {
 		return $http.get(urlBase+ "all/"+amount);
 	}
+	messageService.calculate = function(text, method) {
+		return $http.get(urlBase+ "calculate/"+text + "/" + method);
+	}
+	messageService.remove = function(id) {
+		return $http.get(urlBase+ "remove/"+id);
+	}
 	
-	
-	return messageService	;
+	return messageService;
 }]);
