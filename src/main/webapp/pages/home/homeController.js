@@ -2,7 +2,26 @@ var app = angular.module("myApp");
 
 app.controller('homeController', ['$scope','$state' ,'$rootScope', '$location','MessageService', function($scope, $state, $rootScope, $location, MessageService) {
 	$scope.loaded = 0;
-	
+	$scope.teacher = true;
+	$scope.learnActive = false;
+	$scope.change = function() {
+		$scope.teacher = !$scope.teacher;
+	}
+	$scope.close = function() {
+		$scope.learnActive = false;
+	}
+	$scope.teacherGuess = function(text) {
+		MessageService.teacherGuess(text).success(function(respond){
+			$scope.teacheronwer = respond;
+			$scope.learnActive = true;
+		})
+	}
+	$scope.teacherLearn = function(text) {
+		MessageService.teacherLearn(text).success(function(respond){
+			$scope.teacheronwer = respond;
+			$scope.learnActive = false;
+		})
+	}
 	$scope.insert = function(message) {
 		MessageService.insert(message).success(function(respond) {
 			$scope.callback = respond;

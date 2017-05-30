@@ -137,7 +137,7 @@ public class Prognoze {
 			}
 		return types;
 		} else {
-			return null;
+			return new DataClass().getTypes();
 		}
 		
 	}

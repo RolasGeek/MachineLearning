@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.studies.classifiers.prepareClassifiers;
 import com.studies.model.Messages;
 import com.studies.prognoze.Prognoze;
+import com.studies.prognoze.Teacher;
 import com.studies.service.MessageService;
 
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class MessageRest {
 			guess = Prognoze.getInstance().Calculate2(text).get(0).getName();
 			break;
 		case 2:
-			guess = Prognoze.getInstance().Calculate3(text).get(0).getName();
+			guess = Prognoze.getInstance().Calculate3(text).get(0).getAmount() != 0 ? Prognoze.getInstance().Calculate3(text).get(0).getName() : "Not enought data";  
 			break;
 		default:
 			//Balsavimo metodas
@@ -85,5 +86,22 @@ public class MessageRest {
 		}
 
 	}
+	
+	@GET
+	@Path("teacher/{text}")
+	@Produces(MediaType.APPLICATION_XML)
+	public String  teacherGuess(@PathParam("text") String text) {
+		String guess = Teacher.getInstance().calculute(text);
+		return guess;
+	}
+	
+	@GET
+	@Path("teacherlearn/{text}")
+	@Produces(MediaType.APPLICATION_XML)
+	public String  teacherWrong(@PathParam("text") String text) {
+		Teacher.getInstance().learn(text);
+		return "Try now!!";
+	}
+	
 	
 }

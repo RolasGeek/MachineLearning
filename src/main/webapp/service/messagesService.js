@@ -21,5 +21,13 @@ app.factory('MessageService',['$http', function ($http) {
 		return $http.get(urlBase+ "remove/"+id);
 	}
 	
+	messageService.teacherGuess = function(text) {
+		return $http.get(urlBase+ "teacher/"+text);
+	}
+	
+	messageService.teacherLearn = function(text) {
+		return $http.get(urlBase+ "teacherlearn/"+text);
+	}
+	
 	return messageService;
 }]);

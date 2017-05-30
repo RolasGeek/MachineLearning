@@ -13,7 +13,8 @@ import com.studies.classifiers.prepareClassifiers;
 public class Teacher {
  private Classifier classifier = new Classifier();
  private static Teacher instance;
- private static Teacher getInstance() {
+ private String lastGuess;
+ public static Teacher getInstance() {
 	 if(instance == null) {
 		 instance = new Teacher();
 		 instance.execute();
@@ -59,8 +60,26 @@ public class Teacher {
 				owner = key;
 			}
 		}
+		lastGuess = owner;
 		return owner;
 	}
- 
+ //Paskaičiota blogai, sumazinti zodziu koeficiantus
+public void learn(String text) {
+	HashMap<String, Object> data = classifier.getValues();
+	String words[] = text.split("[^a-zA-Z0-9\'“”’\"$]");
+	for (String string : words) {
+		//Patikslinti koeficiantus
+		DataClass obj = (DataClass) data.get(string);
+		Integer index = obj.getByName(lastGuess); //Blogai atspetas
+		User user = obj.getTypes().get(index);
+		System.out.println("Zodžio -" + string + "koef: " + user.getKoef());
+		user.setKoef(user.getKoef()*0.9);
+		System.out.println("naujas: " + user.getKoef());
+		obj.getTypes().set(index, user);
+		data.replace(string, obj);
+	}
+	classifier.setValues(data);
+}
+
  
 }
