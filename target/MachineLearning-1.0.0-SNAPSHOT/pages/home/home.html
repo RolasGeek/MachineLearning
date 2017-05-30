@@ -1,15 +1,34 @@
 <div style="height:200px; margin:auto; background-color: gray;"> 
 <p>Put something here</p>
 </div>
+<div>
+<input type="submit" name="change" value="Change type" ng-click="change()" class="btn">
+</div>
 <br></br>
-<div class="container">
+<div class="container" ng-if="teacher">
+<h2>Machine without teacher</h2>
 <form name="calculateForm">
 <div class="form-group">
 <textarea name="Message" ng-model="calculateText" class="form-control" required placeholder="Message" style="height: 200px;" ></textarea>
 This message belongs to: {{owner}}
-<input type="submit" name="subbmit" value="Submit (Word count)" ng-click="calculateForm.$valid && calculate(calculateText,0)" class="btn">
+<input type="submit" name="subbmit" value="Submit (Words used)" ng-click="calculateForm.$valid && calculate(calculateText,0)" class="btn">
 <input type="submit" name="subbmit2" value="Submit (Spell check)" ng-click="calculateForm.$valid && calculate(calculateText,1)" class="btn">
 <input type="submit" name="subbmit3" value="Submit (Message Lenght)" ng-click="calculateForm.$valid && calculate(calculateText,2)" class="btn">
+<input type="submit" name="subbmit4" value="Submit (Combined)" ng-click="calculateForm.$valid && calculate(calculateText,10)" class="btn">
+</div>
+</form>
+</div>
+<br>
+<div class="container" ng-if="!teacher">
+<h2>Machine with teacher</h2>
+<form name="calculateForm1">
+<div class="form-group">
+<textarea name="Text" ng-model="teacherText" ng-disabled="learnActive"  class="form-control" required placeholder="Message" style="height: 200px;" ></textarea>
+This message belongs to: {{teacheronwer}}
+<input type="submit" name="subbmit" ng-disabled="learnActive" value="Prognoze" ng-click="calculateForm1.$valid && teacherGuess(teacherText)" class="btn">
+<p>Ar teisinga?
+<input type="submit" name="subbmit2" ng-disabled="!learnActive" value="Taip" ng-click="close()" class="btn">
+<input type="submit" name="subbmit3" ng-disabled="!learnActive" value="Ne" ng-click="teacherLearn(teacherText)" class="btn">
 </div>
 </form>
 </div>
@@ -20,9 +39,9 @@ This message belongs to: {{owner}}
 <textarea name="Messgae" ng-model="message.message" class="form-control" required placeholder="Message" style="height: 200px;" ></textarea>
 <select ng-model="message.name" class="form-control" required>
 <option value="" disabled selected>Please select user</option>
-<option value="Rolas" >Rolas</option>
-<option value="BmWfAnE" >BmWfAnE</option>
-<option value="StOrAs" >StOrAs</option>
+<option value="Rolandas" >Rolandas</option>
+<option value="Laima" >Laima</option>
+<option value="Eivydas" >Eivydas</option>
 <option value="Jonas" >Jonas</option>
 </select>
 <input type="submit" name="subbmit" value="Post" ng-click="messageForm.$valid && insert(message)" class="btn">
