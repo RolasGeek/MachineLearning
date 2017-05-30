@@ -16,7 +16,6 @@ import com.studies.model.Messages;
 import com.studies.service.MessageService;
 
 public class prepareClassifiers {
-	
 
 
 	public static Classifier prepareSpellingCheck() {

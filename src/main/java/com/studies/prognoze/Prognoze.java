@@ -151,7 +151,7 @@ public class Prognoze {
 		List<User> result = new DataClass().getTypes();
 		int i = 0;
 		for (User user : result) {
-			user.setKoef(list1.get(i).getKoef()+list2.get(i).getKoef()+list3.get(i).getKoef());
+			user.setKoef(list1.get(i).getKoef()*0.45+list2.get(i).getKoef()*0.45+list3.get(i).getKoef()*0.1);
 			result.set(i,user);
 			i++;
 		}
