@@ -22,7 +22,7 @@ public class Teacher {
 	 return instance;
  }
  
- private void execute() {
+ public void execute() {
 	 classifier = prepareClassifiers.prepareWordCount();
  }
  

@@ -32,6 +32,7 @@ public class MessageRest {
 		message.setDate(date);
 		try {
 		MessageService.getInstance().create(message);
+		Teacher.getInstance().execute();
 		Prognoze.getInstance().executeClassifiers();
 		return "Message has been successfully posted";
 		} catch (Exception e) {
@@ -78,6 +79,7 @@ public class MessageRest {
 		try {
 		MessageService.getInstance().deleteById(id);
 		Prognoze.getInstance().executeClassifiers();
+		Teacher.getInstance().execute();
 		return "Success";
 		} catch (Exception e) {
 			
