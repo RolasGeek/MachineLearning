@@ -5,6 +5,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.studies.classifiers.User;
 import com.studies.classifiers.prepareClassifiers;
 import com.studies.model.Messages;
 import com.studies.prognoze.Prognoze;
@@ -61,7 +62,8 @@ public class MessageRest {
 			guess = Prognoze.getInstance().Calculate2(text).get(0).getName();
 			break;
 		case 2:
-			guess = Prognoze.getInstance().Calculate3(text).get(0).getAmount() != 0 ? Prognoze.getInstance().Calculate3(text).get(0).getName() : "Not enought data";  
+			List<User> result = Prognoze.getInstance().Calculate3(text);
+			guess = result.get(0).getKoef() != 0 ? result.get(0).getName() : "Not enought data";  
 			break;
 		default:
 			//Balsavimo metodas
@@ -98,12 +100,13 @@ public class MessageRest {
 	}
 	
 	@GET
-	@Path("teacherlearn/{text}")
+	@Path("teacherlearn/{text}/{method}")
 	@Produces(MediaType.APPLICATION_XML)
-	public String  teacherWrong(@PathParam("text") String text) {
-		Teacher.getInstance().learn(text);
+	public String  teacherWrong(@PathParam("text") String text, @PathParam("method") Integer method) {
+		Teacher.getInstance().learn(text, method);
 		return "Try now!!";
 	}
+
 	
 	
 }

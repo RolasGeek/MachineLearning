@@ -64,7 +64,13 @@ public class Teacher {
 		return owner;
 	}
  //Paskaičiota blogai, sumazinti zodziu koeficiantus
-public void learn(String text) {
+public void learn(String text, Integer method) {
+	Double koef = 0.0;
+	if(method == 0) {
+		koef = 0.9;
+	} else {
+		koef = 1.05;
+	}
 	HashMap<String, Object> data = classifier.getValues();
 	String words[] = text.split("[^a-zA-Z0-9\'“”’\"$]");
 	for (String string : words) {
@@ -73,7 +79,7 @@ public void learn(String text) {
 		Integer index = obj.getByName(lastGuess); //Blogai atspetas
 		User user = obj.getTypes().get(index);
 		System.out.println("Zodžio -" + string + "koef: " + user.getKoef());
-		user.setKoef(user.getKoef()*0.9);
+		user.setKoef(user.getKoef()*koef);
 		System.out.println("naujas: " + user.getKoef());
 		obj.getTypes().set(index, user);
 		data.replace(string, obj);

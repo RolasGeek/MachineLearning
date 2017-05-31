@@ -126,16 +126,20 @@ public class Prognoze {
 	public List<User> Calculate3(String text) {
 		Integer lenght = text.length() / 10;
 		DataClass result = classifier3.getByKey(Integer.toString(lenght));
+		DataClass done = new DataClass();
 		if(result != null) {
 			List<User> types = result.getTypes();
 			for (User u : types) {
 				Integer index = types.indexOf(u);
-				Double koef = types.get(0).getAmount() != 0.0 ? u.getAmount()/types.get(0).getAmount() : 0.0;
-				u.setKoef(koef); //Balsaviko koef
-				types.set(index, u);
-				System.out.println("Name: " + u.getName() + " Amount: " + u.getAmount());
+				Double koef = types.get(0).getKoef() != 0.0 ? u.getKoef()/types.get(0).getKoef() : 0.0;
+				Integer ind = done.getByName(u.getName());
+				User temp = done.getTypes().get(ind);
+				temp.setKoef(koef);
+				done.getTypes().set(ind, temp);
+				System.out.println("Name: " + temp.getName() + " Amount: " + temp.getKoef());
 			}
-		return types;
+		done.sortByKoef();
+		return done.getTypes();
 		} else {
 			return new DataClass().getTypes();
 		}

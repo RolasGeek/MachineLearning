@@ -1,6 +1,7 @@
 package com.studies.classifiers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.studies.model.Messages;
@@ -44,5 +45,8 @@ public class DataClass {
 		return sum;
 	}
 	
+	public void sortByKoef() {
+		Collections.sort(types, (o1,o2) -> Double.compare(o2.getKoef(), o1.getKoef()));
+	}
 	
 }

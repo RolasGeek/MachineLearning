@@ -128,8 +128,21 @@ public class prepareClassifiers {
 		Classifier classifier = new Classifier();
 		HashMap<String, Object> data = countLenghts();
 		for (String key : data.keySet()) {
+			DataClass value = (DataClass) data.get(key);
+			List<User> list = value.getTypes();
+			for (User user : list) {
+				if(user.getAmount() > 0) {
+				Integer index = list.indexOf(user);
+				Double d = (double)user.getAmount() / MessageService.getInstance().countByName(user.getName());
+				user.setKoef(d);
+				list.set(index, user);
+				}
+			}
+			
+		}
+		for (String key : data.keySet()) {
 			DataClass obj = (DataClass) data.get(key);
-			Collections.sort(obj.getTypes(), (o1, o2) -> Double.compare(o2.getAmount(), o1.getAmount()));
+			Collections.sort(obj.getTypes(), (o1, o2) -> Double.compare(o2.getKoef(), o1.getKoef()));
 		}
 		classifier.setValues(data);
 		return classifier;
@@ -153,10 +166,6 @@ public class prepareClassifiers {
 				temp.getTypes().set(index, new User(messages.getName(), 0.0, 1));
 				data.put(key, temp);
 			}
-		}
-		
-		for (Messages messages : all) {
-			
 		}
 		return data;
 	}

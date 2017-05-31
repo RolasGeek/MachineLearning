@@ -16,8 +16,8 @@ app.controller('homeController', ['$scope','$state' ,'$rootScope', '$location','
 			$scope.learnActive = true;
 		})
 	}
-	$scope.teacherLearn = function(text) {
-		MessageService.teacherLearn(text).success(function(respond){
+	$scope.teacherLearn = function(text, method) {
+		MessageService.teacherLearn(text, method).success(function(respond){
 			$scope.teacheronwer = respond;
 			$scope.learnActive = false;
 		})

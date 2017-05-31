@@ -1,6 +1,7 @@
-<div style="height:200px; margin:auto; background-color: gray;"> 
-<p>Put something here</p>
+<div style="height:200px;"> 
+<img alt="Image" src="lib/images/pic.jpg" style="width:1300px; height:200px;">
 </div>
+<br>
 <div>
 <input type="submit" name="change" value="Change type" ng-click="change()" class="btn">
 </div>
@@ -27,8 +28,9 @@ This message belongs to: {{owner}}
 This message belongs to: {{teacheronwer}}
 <input type="submit" name="subbmit" ng-disabled="learnActive" value="Prognoze" ng-click="calculateForm1.$valid && teacherGuess(teacherText)" class="btn">
 <p>Ar teisinga?
-<input type="submit" name="subbmit2" ng-disabled="!learnActive" value="Taip" ng-click="close()" class="btn">
-<input type="submit" name="subbmit3" ng-disabled="!learnActive" value="Ne" ng-click="teacherLearn(teacherText)" class="btn">
+<input type="submit" name="subbmit2" ng-disabled="!learnActive" value="Taip" ng-click="teacherLearn(teacherText,1)" class="btn">
+<input type="submit" name="subbmit3" ng-disabled="!learnActive" value="Ne" ng-click="teacherLearn(teacherText,0)" class="btn">
+<input type="submit" name="subbmit3" ng-disabled="!learnActive" value="Close" ng-click="close()" class="btn">
 </div>
 </form>
 </div>

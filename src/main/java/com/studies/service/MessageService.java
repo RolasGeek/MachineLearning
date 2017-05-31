@@ -1,5 +1,6 @@
 package com.studies.service;
 
+import java.awt.print.Book;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -49,6 +50,15 @@ public class MessageService {
 		em.getTransaction().commit();
 		em.close();
 		return users;
+	}
+	public Integer countByName(String name) {
+		em.getTransaction().begin();
+		Query q = em.createQuery("select m from Messages m where m.name= ?1", Messages.class);
+		q.setParameter(1, name);
+		List<Messages> result = (List<Messages>)  q.getResultList();
+		em.getTransaction().commit();
+		em.close();
+		return  result.size();
 	}
 
 	public List<Messages> listAll(Integer startPosition, Integer maxResult) {
