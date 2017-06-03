@@ -19,7 +19,10 @@ import com.studies.model.Messages;
 import com.studies.service.MessageService;
 
 public class prepareClassifiers {
-	static String spellCheckFile = "C:\\Users\\PC\\Desktop\\IP_Projektas\\MachineLearning\\src\\spellChecking.txt";
+
+	private static String spellCheckFileDir = "C:\\Temp";
+	private static String spellCheckFileName = "spellChecking.txt";
+	public static String spellCheckFile = spellCheckFileDir + "//" + spellCheckFileName;
 
 	public static Classifier prepareSpellingCheck() {
 		Classifier classifier = new Classifier();
@@ -35,6 +38,10 @@ public class prepareClassifiers {
 		DataClass users = new DataClass();
 		List<RuleMatch> matches;
 		String words[], text = "", name = "";
+		File fileDir = new File(spellCheckFileDir);
+		if (!fileDir.exists()){
+			fileDir.mkdir();
+		}
 		File f = new File(spellCheckFile);
 		f.delete();
 		try {
@@ -74,12 +81,17 @@ public class prepareClassifiers {
 			data.put(u.getName(), u.getKoef());
 		}
 		//System.out.println("new koef:"+users.getTypes().get(users.getByName("Jonas")).getKoef());
+		createNeuron(f);
 
 		return data;
 	}
 
+	private static void createNeuron(File f){
+		Neuron neuron = new Neuron();
+		neuron.createNeuron(f);
+	}
+
 	private static void writeFile(File file, String text) throws IOException {
-		System.out.println("test");
 		BufferedWriter output = new BufferedWriter(new FileWriter(file, true));
 		output.write(text);
 		output.close();
@@ -144,7 +156,7 @@ public class prepareClassifiers {
 		return count;
 	}
 	
-	
+
 	public static Classifier prepareMessageLenght() {
 		Classifier classifier = new Classifier();
 		HashMap<String, Object> data = countLenghts();
@@ -190,7 +202,10 @@ public class prepareClassifiers {
 		}
 		return data;
 	}
-	
+
+	public String getSpellCheckFile(){
+		return spellCheckFile;
+	}
 	
 
 }
