@@ -1,5 +1,8 @@
 package com.studies.classifiers;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +19,7 @@ import com.studies.model.Messages;
 import com.studies.service.MessageService;
 
 public class prepareClassifiers {
-
+	static String spellCheckFile = "C:\\Users\\PC\\Desktop\\IP_Projektas\\MachineLearning\\src\\spellChecking.txt";
 
 	public static Classifier prepareSpellingCheck() {
 		Classifier classifier = new Classifier();
@@ -32,6 +35,13 @@ public class prepareClassifiers {
 		DataClass users = new DataClass();
 		List<RuleMatch> matches;
 		String words[], text = "", name = "";
+		File f = new File(spellCheckFile);
+		f.delete();
+		try {
+			f.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		double koef = 0.0, prev = 0.0;
 		//System.out.println("old koef:"+users.getTypes().get(users.getByName("Jonas")).getKoef());
 		for (Messages message : all) {
@@ -45,6 +55,9 @@ public class prepareClassifiers {
 				//System.out.println("koef: " + koef);
 				Integer index = users.getByName(name);
 				User u = users.getTypes().get(index);
+				String s = u.getName() +" "+ koef + "\n";
+				writeFile(f, s);
+
 				u.setAmount(u.getAmount()+1);
 				u.setKoef(u.getKoef()+koef);
 				users.getTypes().set(index, u);
@@ -61,9 +74,17 @@ public class prepareClassifiers {
 			data.put(u.getName(), u.getKoef());
 		}
 		//System.out.println("new koef:"+users.getTypes().get(users.getByName("Jonas")).getKoef());
+
 		return data;
 	}
-	
+
+	private static void writeFile(File file, String text) throws IOException {
+		System.out.println("test");
+		BufferedWriter output = new BufferedWriter(new FileWriter(file, true));
+		output.write(text);
+		output.close();
+	}
+
 	private static HashMap<String, Object> countWords() {
 		HashMap<String, Object> data = new HashMap<>();
 		List<Messages> all = MessageService.getInstance().listAll(0, 10000);
