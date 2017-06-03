@@ -11,16 +11,12 @@ import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 
-/**
- * šūdas
- */
 public class Neuron {
+
+    private LinkedHashMap<String, ArrayList<Double>> usersMap = new LinkedHashMap<>();
 
     public Neuron() {
     }
@@ -35,17 +31,12 @@ public class Neuron {
 
         double[][] d = new double[arrayList.size()][];
 
-        try {
-            for (int i = 0; i < arrayList.size(); i++) {
-                double[] temp = new double[arrayList.get(i).size()];
-                for (int j = 0; j < arrayList.get(i).size(); j++) {
-                    temp[j] = arrayList.get(i).get(j);
-                    //d[i][j] = arrayList.get(i).get(j);
-                }
-                d[i] = temp;
+        for (int i = 0; i < arrayList.size(); i++) {
+            double[] temp = new double[arrayList.get(i).size()];
+            for (int j = 0; j < arrayList.get(i).size(); j++) {
+                temp[j] = arrayList.get(i).get(j);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            d[i] = temp;
         }
 
         return d;
@@ -56,42 +47,42 @@ public class Neuron {
         ArrayList<ArrayList<Double>> data = readFromFile(f);
 
         double[][] array = convertToDoubleArray(data);
-        double[][] ideal = {{0}, {1}, {2}, {3}};
+        double[][] ideal = new double[array.length][1];
+        for (int i = 0; i < array.length; i++){
+            ideal[i][0] = i;
+        }
+
         network(array, ideal);
     }
 
     private ArrayList<ArrayList<Double>> readFromFile(File file) {
-
+        usersMap = new LinkedHashMap<>();
 
         ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
-        ArrayList<Double> mas1 = new ArrayList<>();
-        ArrayList<Double> mas2 = new ArrayList<>();
-        ArrayList<Double> mas3 = new ArrayList<>();
-        ArrayList<Double> mas4 = new ArrayList<>();
 
         try {
             Scanner sc = new Scanner(file);
             sc.useLocale(Locale.US);
 
-            while (sc.hasNext()) {
+            while (sc.hasNext()){
                 String s = sc.next();
                 double i = sc.nextDouble();
-                if (s.equals("Laima")) {
-                    mas1.add(i);
-                } else if (s.equals("Eivydas")) {
-                    mas2.add(i);
-                } else if (s.equals("Rolandas")) {
-                    mas3.add(i);
-                } else if (s.equals("Jonas")) {
-                    mas4.add(i);
+                if (usersMap.containsKey(s)){
+                    ArrayList<Double> mas = usersMap.get(s);
+                    mas.add(i);
+                    usersMap.put(s, mas);
                 }
-                System.out.println(i);
+                else{
+                    ArrayList<Double> mas = new ArrayList<>();
+                    mas.add(i);
+                    usersMap.put(s, mas);
+                }
             }
             sc.close();
-            matrix.add(mas1);
-            matrix.add(mas2);
-            matrix.add(mas3);
-            matrix.add(mas4);
+            for (ArrayList<Double> d : usersMap.values()){
+                matrix.add(d);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,5 +125,13 @@ public class Neuron {
                     ", actual=" + output.getData(0) +
                     ",ideal=" + pair.getIdeal().getData(0));
         }
+    }
+
+    public ArrayList<Double> getMapValueByIndex(int index){
+        return usersMap.get((usersMap.keySet().toArray())[index]);
+    }
+
+    public String getMapKeyByIndex(int index){
+        return (String) usersMap.keySet().toArray()[index];
     }
 }
