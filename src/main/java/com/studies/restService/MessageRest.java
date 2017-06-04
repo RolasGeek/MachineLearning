@@ -47,7 +47,7 @@ public class MessageRest {
 	@Path("all/{amount}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Messages> getAll(@PathParam("amount") Integer amount) throws IOException {
-		List<Messages> m = MessageService.getInstance().listAll(0, amount);
+		List<Messages> m = MessageService.getInstance().listAll(0, amount, "DESC");
 		return m;
 	}
 	

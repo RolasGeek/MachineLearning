@@ -43,7 +43,7 @@ public class prepareClassifiers {
 	
 	private static HashMap<String, Object> countSpellingMistakes() {
 		HashMap<String, Object> data = new HashMap<String, Object>();
-		List<Messages> all = MessageService.getInstance().listAll(0, 10000);
+		List<Messages> all = MessageService.getInstance().listAll(0, 10000, "ASC");
 		//JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());
 		DataClass users = new DataClass();
 		List<RuleMatch> matches;
@@ -144,7 +144,7 @@ public class prepareClassifiers {
 
 	private static HashMap<String, Object> countWords() {
 		HashMap<String, Object> data = new HashMap<>();
-		List<Messages> all = MessageService.getInstance().listAll(0, 10000);
+		List<Messages> all = MessageService.getInstance().listAll(0, 10000, "DESC");
 		for (Messages messages : all) {
 			String words[] = messages.getMessage().split("[^a-zA-Z0-9\'“”’\"$]");
 			for (String string : words) {
@@ -230,7 +230,7 @@ public class prepareClassifiers {
 		HashMap<String, Object> data = new HashMap<>();
 		DataClass magic = new DataClass();
 		List<RuleMatch> matches;
-		List<Messages> all = MessageService.getInstance().listAll(0, 10000);
+		List<Messages> all = MessageService.getInstance().listAll(0, 10000, "DESC");
 		File fileDir = new File(spellCheckFileDir);
 		if (!fileDir.exists()){
 			fileDir.mkdir();

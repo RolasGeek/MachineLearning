@@ -99,11 +99,11 @@ public class Neuron {
     		//	System.out.format("data: %.3f | ideal: %.3f\n", data[i][j], ideal[i][j]);
     		}
     	}
-    	
+
         MLDataSet trainingSet = new BasicNeuralDataSet(data, ideal);
         BasicNetwork network = new BasicNetwork();
         network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 1));
-        network.addLayer(new BasicLayer(new ActivationLinear(), true, 4));
+        network.addLayer(new BasicLayer(new ActivationLinear(), true, 6));
         network.addLayer(new BasicLayer(new ActivationLinear(), true, 1));
         network.getStructure().finalizeStructure();
         network.reset();

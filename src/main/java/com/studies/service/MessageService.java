@@ -61,10 +61,10 @@ public class MessageService {
 		return  result.size();
 	}
 
-	public List<Messages> listAll(Integer startPosition, Integer maxResult) {
+	public List<Messages> listAll(Integer startPosition, Integer maxResult, String order) {
 		em.getTransaction().begin();
 		TypedQuery<Messages> findAllQuery = em.createQuery(
-				"SELECT DISTINCT m FROM Messages m ORDER BY m.id DESC",
+				"SELECT DISTINCT m FROM Messages m ORDER BY m.id "+order,
 				Messages.class);
 		if (startPosition != null) {
 			findAllQuery.setFirstResult(startPosition);
