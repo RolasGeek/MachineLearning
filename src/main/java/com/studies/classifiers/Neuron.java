@@ -46,7 +46,7 @@ public class Neuron {
     }
 
 	public BasicNetwork createNeuron(File f) {
-        LinkedHashMap<String, ArrayList<Double>> data = readFromFile(f);
+        Map<String, ArrayList<Double>> data = readFromFile(f);
 
 		double[][] array = new double[countValuesInMap(data)][1];
         double[][] ideal = new double[array.length][1];
@@ -64,8 +64,8 @@ public class Neuron {
         return network(array, ideal);
     }
 
-    private LinkedHashMap<String, ArrayList<Double>> readFromFile(File file) {
-    	LinkedHashMap<String, ArrayList<Double>> koefMap = new LinkedHashMap<>();
+    private Map<String, ArrayList<Double>> readFromFile(File file) {
+        Map<String, ArrayList<Double>> koefMap = new LinkedHashMap<>();
 
         try {
             Scanner sc = new Scanner(file);
@@ -145,7 +145,7 @@ public class Neuron {
         /*
         Just for outs
          */
-        LinkedHashMap<String, ArrayList<Double>> map = readFromFile(new File("C:/Temp/spellChecking.txt"));
+        Map<String, ArrayList<Double>> map = readFromFile(new File("C:/Temp/spellChecking.txt"));
         int i = 0;
         System.out.println("NEURON name list:");
         for (String s : map.keySet()){
