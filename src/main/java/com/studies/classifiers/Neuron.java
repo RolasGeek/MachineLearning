@@ -46,7 +46,7 @@ public class Neuron {
     }
 
 	public BasicNetwork createNeuron(File f) {
-		Map<String, ArrayList<Double>> data = readFromFile(f);
+        LinkedHashMap<String, ArrayList<Double>> data = readFromFile(f);
 
 		double[][] array = new double[countValuesInMap(data)][1];
         double[][] ideal = new double[array.length][1];
@@ -64,8 +64,8 @@ public class Neuron {
         return network(array, ideal);
     }
 
-    private Map<String, ArrayList<Double>> readFromFile(File file) {
-    	Map<String, ArrayList<Double>> koefMap = new LinkedHashMap<>();
+    private LinkedHashMap<String, ArrayList<Double>> readFromFile(File file) {
+    	LinkedHashMap<String, ArrayList<Double>> koefMap = new LinkedHashMap<>();
 
         try {
             Scanner sc = new Scanner(file);
@@ -96,7 +96,7 @@ public class Neuron {
     public BasicNetwork network(double[][] data, double[][] ideal) {
     	for(int i = 0; i < data.length; i++) {
     		for(int j = 0; j < data[i].length; j++) {
-    			System.out.format("data: %.3f | ideal: %.3f\n", data[i][j], ideal[i][j]);
+    		//	System.out.format("data: %.3f | ideal: %.3f\n", data[i][j], ideal[i][j]);
     		}
     	}
     	
@@ -117,7 +117,7 @@ public class Neuron {
         int epoch = 0;
         while (!stop.shouldStop()) {
         	train.iteration();
-			System.out.println("Epoch #" + epoch + " Error:" + train.getError());
+			//System.out.println("Epoch #" + epoch + " Error:" + train.getError());
 			epoch++;
 		}
         System.out.println("Error: "+train.getError());
@@ -141,7 +141,18 @@ public class Neuron {
             }
             System.out.println("");
         }
-        
+
+        /*
+        Just for outs
+         */
+        LinkedHashMap<String, ArrayList<Double>> map = readFromFile(new File("C:/Temp/spellChecking.txt"));
+        int i = 0;
+        System.out.println("NEURON name list:");
+        for (String s : map.keySet()){
+            System.out.println("UserName: " + s + " index: " + i);
+            i++;
+        }
+
         return network;
     }
     

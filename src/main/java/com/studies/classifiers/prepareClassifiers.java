@@ -245,7 +245,7 @@ public class prepareClassifiers {
 			writeFile(f, "@attribute user {");
 			Integer index = 0;
 			for (User user : magic.getTypes()) {
-				System.out.println("UserName: " + user.getName() + " index: " + index);
+				//System.out.println("UserName: " + user.getName() + " index: " + index);
 				writeFile(f, index.toString() + " ");
 				index++;
 			}
