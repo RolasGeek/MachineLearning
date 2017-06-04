@@ -28,8 +28,12 @@ public class prepareClassifiers {
 	private static String spellCheckFileDir = "C:\\Temp";
 	private static String spellCheckFileName = "spellChecking.txt";
 	public static String spellCheckFile = spellCheckFileDir + "//" + spellCheckFileName;
+	private static String doubleCheckFileName = "doubleChecking.txt";
+	public static String doubleCheckFile = spellCheckFileDir + "//" + doubleCheckFileName;
+
 	private static BasicNetwork basicNetwork;
 	
+
 	public static Classifier prepareSpellingCheck() {
 		Classifier classifier = new Classifier();
 		HashMap<String, Object> data = countSpellingMistakes();
@@ -224,10 +228,43 @@ public class prepareClassifiers {
 	
 	public static HashMap<String, Object> countLenghts() {
 		HashMap<String, Object> data = new HashMap<>();
+		DataClass magic = new DataClass();
+		List<RuleMatch> matches;
 		List<Messages> all = MessageService.getInstance().listAll(0, 10000);
+		File fileDir = new File(spellCheckFileDir);
+		if (!fileDir.exists()){
+			fileDir.mkdir();
+		}
+		File f = new File(doubleCheckFile);
+		f.delete();
+		try {
+			f.createNewFile();
+			writeFile(f, "@relation ads\n\n");
+			writeFile(f, "@attribute mistakes numeric\n");
+			writeFile(f, "@attribute length numeric\n");
+			writeFile(f, "@attribute user {");
+			Integer index = 0;
+			for (User user : magic.getTypes()) {
+				System.out.println("UserName: " + user.getName() + " index: " + index);
+				writeFile(f, index.toString() + " ");
+				index++;
+			}
+			writeFile(f, "}\n");
+			writeFile(f, "\n@data\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+			
 		for (Messages messages : all) {
-			int l = messages.getMessage().length() / 10;
+			int l = messages.getMessage().length();
 			String key  = Integer.toString(l);
+			try {
+				matches = LanguageToolInstance.getInstance().getLangTool().check(messages.getMessage());
+				String writeString = matches.size() + " " + l + " " +  magic.getByName(messages.getName()) + "\n";
+				writeFile(f, writeString);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			DataClass obj = (DataClass) data.get(key);
 			if(obj != null) {
 				Integer index = obj.getByName(messages.getName());

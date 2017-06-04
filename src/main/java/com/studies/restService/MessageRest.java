@@ -5,6 +5,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.studies.classifiers.KNearest;
 import com.studies.classifiers.User;
 import com.studies.classifiers.prepareClassifiers;
 import com.studies.model.Messages;
@@ -52,8 +53,10 @@ public class MessageRest {
 	@GET
 	@Path("calculate/{text}/{method}")
 	@Produces(MediaType.APPLICATION_XML)
-	public String calculate(@PathParam("text") String text, @PathParam("method") Integer method) {
+	public String calculate(@PathParam("text") String text, @PathParam("method") Integer method) throws Exception {
 		String guess = "";
+		prepareClassifiers.countLenghts();
+		KNearest.execute();
 		switch (method) {
 		case 0:
 			guess = Prognoze.getInstance().Calculate(text).get(0).getName();
