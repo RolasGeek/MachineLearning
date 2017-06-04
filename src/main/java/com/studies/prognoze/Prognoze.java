@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.xml.crypto.Data;
 
+import org.encog.neural.networks.BasicNetwork;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.AmericanEnglish;
 import org.languagetool.rules.RuleMatch;
@@ -85,8 +86,9 @@ public class Prognoze {
 		return resultdata;
 	}
 	
+	// spell check klasifikavimas paprastu metodu
+	/*
 	public List<User> Calculate2(String text) {
-		
 		HashMap<String, Object> result = classifier2.getValues();
 		
 		//JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());
@@ -120,6 +122,37 @@ public class Prognoze {
 		}
 		Collections.sort(resultdata, (o1,o2)-> Double.compare(o2.getKoef(), o1.getKoef()));
 		System.out.println("message koef: "+koef+". arciausias koef: "+result.get(owner));
+		return resultdata;
+	}*/
+	
+	// spell check prognoze naudojant neuronu tinkla
+	public List<User> Calculate2(String text) {
+		List<User> resultdata = new ArrayList<>();
+		
+		List<RuleMatch> matches;
+		try {
+			matches = LanguageToolInstance.getInstance().getLangTool().check(text);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		String words[] = text.split("[^a-zA-Z0-9\'“”’\"$]");
+		double koef = matches.size()/(double)words.length;
+		
+		BasicNetwork bn = prepareClassifiers.getNetwork();
+		double in[] = { koef };
+		double out[] = { 0.0 };
+		bn.compute(in, out);
+		
+		double result = out[0];
+		String userName = prepareClassifiers.getUserFromDouble(result);
+		System.out.println("Prognoze: " + result);
+		System.out.println("Useris: " + userName);
+		resultdata.add(new User(userName, result, 0));
+		System.out.println("message koef: "+koef);
+		
 		return resultdata;
 	}
 	

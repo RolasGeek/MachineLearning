@@ -1,26 +1,29 @@
 package com.studies.classifiers;
 
 import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.strategy.Greedy;
+import org.encog.ml.train.strategy.StopTrainingStrategy;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.Train;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.networks.training.propagation.quick.QuickPropagation;
 
 import java.io.File;
 import java.util.*;
 
 
 public class Neuron {
-
-    private LinkedHashMap<String, ArrayList<Double>> usersMap = new LinkedHashMap<>();
-
+	
     public Neuron() {
+    	
     }
 
+    // unused
     private double[][] convertToDoubleArray(ArrayList<ArrayList<Double>> arrayList) {
 
         Double[][] array = new Double[arrayList.size()][];
@@ -42,23 +45,27 @@ public class Neuron {
         return d;
     }
 
-    public void createNeuron(File f) {
+	public BasicNetwork createNeuron(File f) {
+		Map<String, ArrayList<Double>> data = readFromFile(f);
 
-        ArrayList<ArrayList<Double>> data = readFromFile(f);
-
-        double[][] array = convertToDoubleArray(data);
+		double[][] array = new double[countValuesInMap(data)][1];
         double[][] ideal = new double[array.length][1];
-        for (int i = 0; i < array.length; i++){
-            ideal[i][0] = i;
+        int i = 0, j = 0;
+		for(String s : data.keySet()) {
+            ArrayList<Double> als = data.get(s);
+            for(Double d : als) {
+            	array[j][0] = d;
+            	ideal[j][0] = i;
+            	j++;
+            }
+            i++;
         }
-
-        network(array, ideal);
+        
+        return network(array, ideal);
     }
 
-    private ArrayList<ArrayList<Double>> readFromFile(File file) {
-        usersMap = new LinkedHashMap<>();
-
-        ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
+    private Map<String, ArrayList<Double>> readFromFile(File file) {
+    	Map<String, ArrayList<Double>> koefMap = new LinkedHashMap<>();
 
         try {
             Scanner sc = new Scanner(file);
@@ -67,71 +74,94 @@ public class Neuron {
             while (sc.hasNext()){
                 String s = sc.next();
                 double i = sc.nextDouble();
-                if (usersMap.containsKey(s)){
-                    ArrayList<Double> mas = usersMap.get(s);
+                if (koefMap.containsKey(s)){
+                    ArrayList<Double> mas = koefMap.get(s);
                     mas.add(i);
-                    usersMap.put(s, mas);
+                    koefMap.put(s, mas);
                 }
                 else{
                     ArrayList<Double> mas = new ArrayList<>();
                     mas.add(i);
-                    usersMap.put(s, mas);
+                    koefMap.put(s, mas);
                 }
             }
             sc.close();
-            for (ArrayList<Double> d : usersMap.values()){
-                matrix.add(d);
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return matrix;
+        return koefMap;
     }
 
-    public void network(double[][] data, double[][] ideal) {
-        NeuralDataSet trainingSet = new BasicNeuralDataSet(data, ideal);
+    public BasicNetwork network(double[][] data, double[][] ideal) {
+    	for(int i = 0; i < data.length; i++) {
+    		for(int j = 0; j < data[i].length; j++) {
+    			System.out.format("data: %.3f | ideal: %.3f\n", data[i][j], ideal[i][j]);
+    		}
+    	}
+    	
+        MLDataSet trainingSet = new BasicNeuralDataSet(data, ideal);
         BasicNetwork network = new BasicNetwork();
-        network.addLayer(new BasicLayer(new ActivationLinear(), true, 2));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 1));
         network.addLayer(new BasicLayer(new ActivationLinear(), true, 4));
         network.addLayer(new BasicLayer(new ActivationLinear(), true, 1));
         network.getStructure().finalizeStructure();
         network.reset();
+    	
+        final Train train = new QuickPropagation(network, trainingSet);
 
-        final Train train = new ResilientPropagation(network, trainingSet);
-
-        int epoch = 1;
-        double oldEpochError = Double.MAX_VALUE;
-        int oldErrorEpoch = 0;
-        do {
-            train.iteration();
-            if(oldEpochError + 1000 <= epoch) {
-                break;
-            }
-            if(train.getError() - oldEpochError <= 1) {
-                oldEpochError = train.getError();
-                oldErrorEpoch = epoch;
-            }
-            System.out.println("Epoch #" + epoch + " Error:" + train.getError());
-            epoch++;
-        } while(train.getError() > 0.01);
-
+        StopTrainingStrategy stop = new StopTrainingStrategy();
+        train.addStrategy(new Greedy());
+        train.addStrategy(stop);
+        
+        int epoch = 0;
+        while (!stop.shouldStop()) {
+        	train.iteration();
+			System.out.println("Epoch #" + epoch + " Error:" + train.getError());
+			epoch++;
+		}
+        System.out.println("Error: "+train.getError());
+        
+        System.out.println("epochs: "+epoch);
         System.out.println("Neural Network Results:");
 
         for(MLDataPair pair: trainingSet ) {
             final MLData output = network.compute(pair.getInput());
-            System.out.println(pair.getInput().getData(0) +
-                    "," + pair.getInput().getData(1) +
-                    ", actual=" + output.getData(0) +
-                    ",ideal=" + pair.getIdeal().getData(0));
+            System.out.print("data=");
+            for(double d : pair.getInput().getData()) {
+            	System.out.format("%.3f, ", d);
+            }
+            System.out.print("actual=");
+            for(double d : output.getData()) {
+            	System.out.format("%.3f, ", d);
+            }
+            System.out.print("ideal=");
+            for(double d : pair.getIdeal().getData()) {
+            	System.out.format("%.3f, ", d);
+            }
+            System.out.println("");
         }
+        
+        return network;
     }
-
+    
+    private int countValuesInMap(Map<String, ArrayList<Double>> data) {
+    	int num = 0;
+    	for(String s : data.keySet()) {
+            ArrayList<Double> als = data.get(s);
+            for(Double d : als) {
+            	num++;
+            }
+        }
+    	return num;
+    }
+    
+    /*
     public ArrayList<Double> getMapValueByIndex(int index){
         return usersMap.get((usersMap.keySet().toArray())[index]);
     }
 
     public String getMapKeyByIndex(int index){
         return (String) usersMap.keySet().toArray()[index];
-    }
+    }*/
 }

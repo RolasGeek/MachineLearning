@@ -2,13 +2,18 @@ package com.studies.classifiers;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
 
+import org.encog.neural.networks.BasicNetwork;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.AmericanEnglish;
 import org.languagetool.rules.RuleMatch;
@@ -23,7 +28,8 @@ public class prepareClassifiers {
 	private static String spellCheckFileDir = "C:\\Temp";
 	private static String spellCheckFileName = "spellChecking.txt";
 	public static String spellCheckFile = spellCheckFileDir + "//" + spellCheckFileName;
-
+	private static BasicNetwork basicNetwork;
+	
 	public static Classifier prepareSpellingCheck() {
 		Classifier classifier = new Classifier();
 		HashMap<String, Object> data = countSpellingMistakes();
@@ -82,15 +88,50 @@ public class prepareClassifiers {
 		}
 		//System.out.println("new koef:"+users.getTypes().get(users.getByName("Jonas")).getKoef());
 		createNeuron(f);
-
+		
 		return data;
+	}
+	
+	public static String getUserFromDouble(double d) {
+		File f = new File(spellCheckFile);
+		ArrayList<String> userList = new ArrayList<String>();
+		int val = (int) Math.round(d);
+		int i = 0;
+		Scanner sc;
+		try {
+			sc = new Scanner(f);
+			sc.useLocale(Locale.US);
+			while (sc.hasNext()){
+                String s = sc.next();
+                double _ = sc.nextDouble();
+                if (!userList.contains(s)) {
+                	if(i==val) {
+                		sc.close();
+                		return s;
+                	}
+                	userList.add(s);
+                	i++;
+                }
+            }
+            sc.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "null";
+		}
+        
+		return "null";
 	}
 
 	private static void createNeuron(File f){
 		Neuron neuron = new Neuron();
-		neuron.createNeuron(f);
+		basicNetwork = neuron.createNeuron(f);
 	}
 
+	public static BasicNetwork getNetwork() {
+		return basicNetwork;
+	}
+	
 	private static void writeFile(File file, String text) throws IOException {
 		BufferedWriter output = new BufferedWriter(new FileWriter(file, true));
 		output.write(text);
