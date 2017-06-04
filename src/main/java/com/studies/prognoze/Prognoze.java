@@ -17,6 +17,7 @@ import org.languagetool.rules.RuleMatch;
 import com.studies.SpellingChecker.LanguageToolInstance;
 import com.studies.classifiers.Classifier;
 import com.studies.classifiers.DataClass;
+import com.studies.classifiers.KNearest;
 import com.studies.classifiers.User;
 import com.studies.classifiers.prepareClassifiers;
 import com.sun.jna.IntegerType;
@@ -199,6 +200,13 @@ public class Prognoze {
 	public List<User> sortByName(List<User> list) {
 		Collections.sort(list, (o1,o2)->o1.getName().compareTo(o2.getName()));
 		return list;
+	}
+	
+	public String knearestAnswer(String text) throws Exception {
+		List<RuleMatch> list = LanguageToolInstance.getInstance().getLangTool().check(text);
+		Integer index = (int) KNearest.execute(list.size(), text.length(), 0);
+		String guess = new DataClass().getTypes().get(index).getName();
+		return guess;
 	}
  
 }

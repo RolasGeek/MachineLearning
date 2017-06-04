@@ -5,6 +5,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.studies.classifiers.DataClass;
 import com.studies.classifiers.KNearest;
 import com.studies.classifiers.User;
 import com.studies.classifiers.prepareClassifiers;
@@ -55,8 +56,6 @@ public class MessageRest {
 	@Produces(MediaType.APPLICATION_XML)
 	public String calculate(@PathParam("text") String text, @PathParam("method") Integer method) throws Exception {
 		String guess = "";
-		prepareClassifiers.countLenghts();
-		KNearest.execute();
 		switch (method) {
 		case 0:
 			guess = Prognoze.getInstance().Calculate(text).get(0).getName();
@@ -65,8 +64,7 @@ public class MessageRest {
 			guess = Prognoze.getInstance().Calculate2(text).get(0).getName();
 			break;
 		case 2:
-			List<User> result = Prognoze.getInstance().Calculate3(text);
-			guess = result.get(0).getKoef() != 0 ? result.get(0).getName() : "Not enought data";  
+			guess = Prognoze.getInstance().knearestAnswer(text);
 			break;
 		default:
 			//Balsavimo metodas

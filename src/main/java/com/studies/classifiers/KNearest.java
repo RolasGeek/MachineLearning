@@ -22,31 +22,26 @@ public class KNearest {
 			return inputReader;
 		}
 	 
-		public static void execute() throws Exception {
+		public static double execute(Integer mistakes, Integer length, Integer user) throws Exception {
 			BufferedReader datafile = readDataFile("C:\\Temp\\doubleChecking.txt");
 	 
 			Instances data = new Instances(datafile);
 			data.setClassIndex(data.numAttributes() - 1);
 	 
 			//do not use first and second
-			Instance first = data.instance(0);
-			Instance second = data.instance(1);
 			Instance inst = new DenseInstance(3); 
-			inst.setValue(0, 2);
-			inst.setValue(1, 24);
-			inst.setValue(2, 0);
+			inst.setValue(0, mistakes);
+			inst.setValue(1, length);
+			inst.setValue(2, user);
 			inst.setDataset(data);
-			
-			data.delete(0);
-			data.delete(1);
 	 
 			IBk ibk = new IBk();		
 			ibk.buildClassifier(data);
 	 
-			double class1 = ibk.classifyInstance(first);
-			double class2 = ibk.classifyInstance(inst);
-			
+			double class1 = ibk.classifyInstance(inst);
+			System.out.println("belongs to: " + class1);
+			return class1;
 	 
-			System.out.println("first: " + class1 + "\nsecond: " + class2);
+			
 		}
 }
